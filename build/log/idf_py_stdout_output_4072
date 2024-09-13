@@ -1,0 +1,52 @@
+-- Existing sdkconfig 'H:/OneDrive/Documents/esp-idf/Projects/DogbulEsp32/sdkconfig' renamed to 'H:/OneDrive/Documents/esp-idf/Projects/DogbulEsp32/sdkconfig.old'.
+-- Found Git: C:/Users/Esso/esp/v5.1.4/esp-idf/tools/tools/idf-git/2.39.2/cmd/git.exe (found version "2.39.2.windows.1") 
+-- Component directory H:/OneDrive/Documents/esp-idf/Projects/DogbulEsp32/components/components does not contain a CMakeLists.txt file. No component will be added
+-- The C compiler identification is GNU 12.2.0
+-- The CXX compiler identification is GNU 12.2.0
+-- The ASM compiler identification is GNU
+-- Found assembler: C:/Users/Esso/esp/v5.1.4/esp-idf/tools/tools/riscv32-esp-elf/esp-12.2.0_20230208/riscv32-esp-elf/bin/riscv32-esp-elf-gcc.exe
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: C:/Users/Esso/esp/v5.1.4/esp-idf/tools/tools/riscv32-esp-elf/esp-12.2.0_20230208/riscv32-esp-elf/bin/riscv32-esp-elf-gcc.exe - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: C:/Users/Esso/esp/v5.1.4/esp-idf/tools/tools/riscv32-esp-elf/esp-12.2.0_20230208/riscv32-esp-elf/bin/riscv32-esp-elf-g++.exe - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- git rev-parse returned 'fatal: not a git repository (or any of the parent directories): .git'
+-- Could not use 'git describe' to determine PROJECT_VER.
+-- Building ESP-IDF components for target esp32c3
+NOTICE: Skipping optional dependency: espressif/esp-sr
+NOTICE: Skipping optional dependency: espressif/esp-sr
+Processing 26 dependencies:
+[1/26] chmorgan/esp-libhelix-mp3 (1.0.3)
+[2/26] espressif/arduino-esp32 (3.0.4)
+[3/26] espressif/cbor (0.6.0~1)
+[4/26] espressif/esp-dsp (1.5.2)
+[5/26] espressif/esp-modbus (1.0.15)
+[6/26] espressif/esp-serial-flasher (0.0.11)
+[7/26] espressif/esp-zboss-lib (1.5.0)
+[8/26] espressif/esp-zigbee-lib (1.5.0)
+[9/26] espressif/esp_diag_data_store (1.0.1)
+[10/26] espressif/esp_diagnostics (1.2.0)
+[11/26] espressif/esp_insights (1.2.0)
+[12/26] espressif/esp_modem (1.1.0)
+[13/26] espressif/esp_rainmaker (1.5.0)
+[14/26] espressif/esp_rcp_update (1.2.0)
+[15/26] espressif/esp_schedule (1.2.0)
+[16/26] espressif/esp_secure_cert_mgr (2.4.1)
+[17/26] espressif/jsmn (1.1.0)
+[18/26] espressif/json_generator (1.1.2)
+[19/26] espressif/json_parser (1.0.3)
+[20/26] espressif/libsodium (1.0.20~1)
+[21/26] espressif/mdns (1.4.0)
+[22/26] espressif/network_provisioning (1.0.2)
+[23/26] espressif/qrcode (0.1.0~2)
+[24/26] espressif/rmaker_common (1.4.6)
+[25/26] joltwallet/littlefs (1.14.8)
+[26/26] idf (5.1.4)
+-- DEBUG: Use esp-modbus component folder: H:/OneDrive/Documents/esp-idf/Projects/DogbulEsp32/managed_components/espressif__esp-modbus.
+-- Configuring incomplete, errors occurred!
+See also "H:/OneDrive/Documents/esp-idf/Projects/DogbulEsp32/build/CMakeFiles/CMakeOutput.log".

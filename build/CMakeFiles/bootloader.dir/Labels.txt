@@ -1,0 +1,13 @@
+# Target labels
+ bootloader
+# Source files and their labels
+H:/OneDrive/Documents/esp-idf/Projects/DogbulEsp32/build/CMakeFiles/bootloader
+H:/OneDrive/Documents/esp-idf/Projects/DogbulEsp32/build/CMakeFiles/bootloader.rule
+H:/OneDrive/Documents/esp-idf/Projects/DogbulEsp32/build/CMakeFiles/bootloader-complete.rule
+H:/OneDrive/Documents/esp-idf/Projects/DogbulEsp32/build/bootloader-prefix/src/bootloader-stamp/bootloader-build.rule
+H:/OneDrive/Documents/esp-idf/Projects/DogbulEsp32/build/bootloader-prefix/src/bootloader-stamp/bootloader-configure.rule
+H:/OneDrive/Documents/esp-idf/Projects/DogbulEsp32/build/bootloader-prefix/src/bootloader-stamp/bootloader-download.rule
+H:/OneDrive/Documents/esp-idf/Projects/DogbulEsp32/build/bootloader-prefix/src/bootloader-stamp/bootloader-install.rule
+H:/OneDrive/Documents/esp-idf/Projects/DogbulEsp32/build/bootloader-prefix/src/bootloader-stamp/bootloader-mkdir.rule
+H:/OneDrive/Documents/esp-idf/Projects/DogbulEsp32/build/bootloader-prefix/src/bootloader-stamp/bootloader-patch.rule
+H:/OneDrive/Documents/esp-idf/Projects/DogbulEsp32/build/bootloader-prefix/src/bootloader-stamp/bootloader-update.rule

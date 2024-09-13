@@ -1,0 +1,28 @@
+CMake Error at C:/Users/Esso/esp/v5.1.4/esp-idf/tools/cmake/component.cmake:250 (message):
+  Traceback (most recent call last):
+
+    File "<frozen runpy>", line 198, in _run_module_as_main
+    File "<frozen runpy>", line 88, in _run_code
+    File "c:\Users\Esso\esp\v5.1.4\esp-idf\tools\python_env\idf5.1_py3.11_env\Lib\site-packages\idf_component_manager\prepare_components\__main__.py", line 6, in <module>
+      main()
+    File "c:\Users\Esso\esp\v5.1.4\esp-idf\tools\python_env\idf5.1_py3.11_env\Lib\site-packages\idf_component_manager\prepare_components\prepare.py", line 130, in main
+      args.func(args)
+    File "c:\Users\Esso\esp\v5.1.4\esp-idf\tools\python_env\idf5.1_py3.11_env\Lib\site-packages\idf_component_manager\prepare_components\prepare.py", line 41, in inject_requirements
+      ).inject_requirements(
+        ^^^^^^^^^^^^^^^^^^^^
+    File "c:\Users\Esso\esp\v5.1.4\esp-idf\tools\python_env\idf5.1_py3.11_env\Lib\site-packages\idf_component_manager\core.py", line 98, in wrapper
+      return func(self, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    File "c:\Users\Esso\esp\v5.1.4\esp-idf\tools\python_env\idf5.1_py3.11_env\Lib\site-packages\idf_component_manager\core.py", line 840, in inject_requirements
+      os.remove(component_list_file)
+
+  PermissionError: [WinError 5] Access is denied:
+  'H:/OneDrive/Documents/esp-idf/Projects/DogbulEsp32/build\\components_with_manifests_list.temp'
+
+
+Call Stack (most recent call first):
+  C:/Users/Esso/esp/v5.1.4/esp-idf/tools/cmake/build.cmake:574 (__component_get_requirements)
+  C:/Users/Esso/esp/v5.1.4/esp-idf/tools/cmake/project.cmake:604 (idf_build_process)
+  CMakeLists.txt:6 (project)
+
+
