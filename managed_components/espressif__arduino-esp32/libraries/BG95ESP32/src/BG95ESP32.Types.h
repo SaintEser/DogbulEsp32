@@ -47,7 +47,7 @@ enum class BG95ESP32RegistrationStatusResponse : uint8_t
 
 /**
  * Fields return by the AT+CSQ command.
- */
+//  */
 enum class BG95ESP32SignalQualityResponse : uint8_t
 {
 	SignalStrength = 0, ///< Received Signal Strength Indication
@@ -92,10 +92,10 @@ enum class BG95ESP32BatteryChargeField : uint8_t
 
 enum class BG95ESP32PinField : uint8_t
 {
-	Pin = 0,	
-	Puk = 1,	
-	Pin2 = 2, 
-	Puk2 =3
+	Pin = 1,	
+	Puk = 2,	
+	Pin2 = 1, 
+	Puk2 =2
 };
 
 enum class BG95ESP32SlowClock : uint8_t
@@ -142,7 +142,7 @@ struct BG95ESP32ChargingStatus
 struct BG95ESP32PinStatus  
 {
 	int8_t pin,   
-	puk,   
-	pin2,  
-	puk2;
+	puk;   
+	//pin2,  
+	//puk2;
 };

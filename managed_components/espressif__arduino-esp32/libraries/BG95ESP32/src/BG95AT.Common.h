@@ -30,7 +30,7 @@ TOKEN(ERROR);
 TOKEN_TEXT(READ, "?");
 TOKEN_TEXT(WRITE, "=");
 //TOKEN_TEXT(NL, "\n");
-TOKEN_TEXT(NL, "\r\n"); //  \r\n works for BG95
+TOKEN_TEXT(NL, "\r\n"); //  \r\n works for BG95 #define   AT_TERMINATOR     		'\r\n'
 
 
 /*#define CR "\n"

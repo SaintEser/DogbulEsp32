@@ -56,6 +56,12 @@ private:
 	bool setBearerSetting(ATConstStr parameter, const char* value);
 
 public:
+
+bool parseReplyPin(const char* responseBuffer, int& pinCount, int& pukCount, int& pin2Count, int& puk2Count);
+
+int readResponse(char* buffer, size_t bufferSize);
+
+
 	BG95ESP32(uint8_t resetPin, uint8_t pwrKeyPin= BG95ESP32_UNAVAILABLE_PIN);
 	~BG95ESP32();	
 
@@ -95,7 +101,10 @@ public:
 	 */
 	bool setSlowClock(BG95ESP32SlowClock mode);
 
-	BG95ESP32PinStatus getPinState();
+	BG95ESP32PinStatus getPinState1();
+	BG95ESP32PinStatus getPinState2();
+	
+	bool parseQPINCLine(const String& line, BG95ESP32PinStatus& status);
 
 	void init();
 	

@@ -3,8 +3,11 @@
 AT_COMMAND(SEND_SMS, "+CMGS=\"%s\"");
 
 TOKEN_TEXT(CPIN, "+CPIN");
+TOKEN_TEXT(QPINC, "+QPINC"); //Updated for BG95, AT+QPINC Display PIN Remainder Counter
 TOKEN_TEXT(CSQ, "+CSQ");
 TOKEN_TEXT(CMGS, "+CMGS");
+//set a token for +QINISTAT
+TOKEN_TEXT(QINISTAT, "+QINISTAT");
 
 
 bool BG95ESP32::simUnlock(const char* pin)
@@ -16,14 +19,33 @@ bool BG95ESP32::simUnlock(const char* pin)
 
 size_t BG95ESP32::getSimState(char *state, size_t stateSize)
 {
-	sendAT(TO_F(TOKEN_CPIN), TO_F(TOKEN_READ));
-	if(waitResponse(5000L, TO_F(TOKEN_CPIN)) != 0) return 0;
+	Log.notice("Sending AT command to get SIM state\n");
+	sendAT(TO_F(TOKEN_QINISTAT));
+	if(waitResponse(5000L, TO_F(TOKEN_QINISTAT)) != 0) {
+		Log.error("Failed to get response for SIM state\n");
+		return 0;
+	}
 
-	copyCurrentLine(state, stateSize, strlen_P(TOKEN_CPIN) + 2);
+	Log.notice("Response received, copying current line\n");
+	char tempBuffer[32];
+	copyCurrentLine(state, stateSize, strlen_P(TOKEN_QINISTAT) + 2);
 
-	return waitResponse() == 0 ?
-		strlen(state) :
-		0;
+	// Parse the number from the response
+	Log.notice("Parsing the number from the response\n");
+	char *numberStart = strchr(tempBuffer, ':');
+	if (numberStart != nullptr) {
+		numberStart += 2; // Skip ": " to get to the number
+		strncpy(state, numberStart, stateSize - 1);
+		state[stateSize - 1] = '\0'; // Ensure null-termination
+		Log.notice("Parsed state: %s\n", state);
+	} else {
+		Log.error("Parsing failed\n");
+		return 0; // Parsing failed
+	}
+
+	// Wait for the final response and return the length of the state string if it matches TOKEN_OK
+	Log.notice("Waiting for final response\n");
+	return waitResponse() == 0 ? strlen(state) : 0;
 }
 
 size_t BG95ESP32::getImei(char *imei, size_t imeiSize)

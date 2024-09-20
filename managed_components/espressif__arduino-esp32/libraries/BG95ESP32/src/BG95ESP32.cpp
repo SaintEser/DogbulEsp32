@@ -76,6 +76,15 @@ size_t BG95ESP32::sendCommandW(const char *cmd, char *response, size_t responseS
 	return 0;
 }
 
+int BG95ESP32::readResponse(char* buffer, size_t bufferSize) {
+    // Example implementation: read data into buffer and return the number of bytes read
+    // This is a placeholder implementation; you should replace it with actual logic
+    int bytesRead = 0;
+    // Simulate reading data
+    strncpy(buffer, "OK", bufferSize);
+    bytesRead = strlen(buffer);
+    return bytesRead;
+}
 //#pragma endregion
 
 

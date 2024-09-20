@@ -384,6 +384,7 @@ H:/OneDrive/Documents/esp-idf/Projects/DogbulEsp32/build/esp-idf/esp_wifi/CMakeF
 H:/OneDrive/Documents/esp-idf/Projects/DogbulEsp32/build/esp-idf/esp_wifi/CMakeFiles/install.dir
 H:/OneDrive/Documents/esp-idf/Projects/DogbulEsp32/build/esp-idf/esp_wifi/CMakeFiles/install/local.dir
 H:/OneDrive/Documents/esp-idf/Projects/DogbulEsp32/build/esp-idf/esp_wifi/CMakeFiles/install/strip.dir
+H:/OneDrive/Documents/esp-idf/Projects/DogbulEsp32/build/esp-idf/bt/CMakeFiles/__idf_bt.dir
 H:/OneDrive/Documents/esp-idf/Projects/DogbulEsp32/build/esp-idf/bt/CMakeFiles/edit_cache.dir
 H:/OneDrive/Documents/esp-idf/Projects/DogbulEsp32/build/esp-idf/bt/CMakeFiles/rebuild_cache.dir
 H:/OneDrive/Documents/esp-idf/Projects/DogbulEsp32/build/esp-idf/bt/CMakeFiles/list_install_components.dir

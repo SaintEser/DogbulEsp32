@@ -2,7 +2,9 @@
 
 TOKEN_TEXT(CBC, "+CBC");
 TOKEN_TEXT(CFUN, "+CFUN");
-TOKEN_TEXT(SPIC, "+SPIC");
+TOKEN_TEXT(QPINCSC, "+QPINC=\"SC\"");
+TOKEN_TEXT(QPINCP2, "+QPINC=\"P2\"");  //Updated to QPINC for BG95, old one:TOKEN_TEXT(SPIC, "+SPIC");
+TOKEN_TEXT(QPINCR, "+QPINC:");
 
 bool BG95ESP32::powered() {
   sendAT();
@@ -14,7 +16,7 @@ void BG95ESP32::powertoggle() {
   digitalWrite(_pwrKeyPin, HIGH);
   delay(750);
   digitalWrite(_pwrKeyPin, LOW);
-	delay(3000);
+  delay(3000);
 }
 
 bool BG95ESP32::powerOnOff(bool power) {
@@ -28,16 +30,16 @@ bool BG95ESP32::powerOnOff(bool power) {
   }
 
   BG95ESP32_PRINT_P("powerOnOff: %t", power);
- 	powertoggle();
+  powertoggle();
 
   uint16_t timeout = 5000;
   do {
-		BG95ESP32_PRINT_P("powerOnOff: %t", power);
+    BG95ESP32_PRINT_P("powerOnOff: %t", power);
     powertoggle();
     delay(500);
     timeout -= 150;
     currentlyPowered = powered();
-  } while (currentlyPowered != power && timeout > 0);  
+  } while (currentlyPowered != power && timeout > 0);
 
   return currentlyPowered == power;
 }
@@ -82,15 +84,32 @@ bool BG95ESP32::setSlowClock(BG95ESP32SlowClock mode) {
   return waitResponse() == 0;
 }
 
-BG95ESP32PinStatus BG95ESP32::getPinState() {
-  int8_t pincount, pukcount, pin2count, puk2count;
+BG95ESP32PinStatus BG95ESP32::getPinState1() {
+  int8_t pincount=-1, pukcount=-1;
 
-  sendAT(TO_F(TOKEN_SPIC));
+  sendAT(TO_F(TOKEN_QPINCSC));
+//enter debugging code here so that replyBuffer has "+QPINC: \"P2\",3,4\nOK\n" 
 
-  if (waitResponse(10000L, TO_F(TOKEN_SPIC)) == 0 && parseReply(',', (uint8_t)BG95ESP32PinField::Pin, &pincount)
-      && parseReply(',', (uint8_t)BG95ESP32PinField::Puk, &pukcount) && parseReply(',', (uint8_t)BG95ESP32PinField::Pin2, &pin2count)
-      && parseReply(',', (uint8_t)BG95ESP32PinField::Puk2, &puk2count) && waitResponse() == 0) {
-    return {pincount, pukcount, pin2count, puk2count};
+
+  
+  if (waitResponse(10000L, TO_F(TOKEN_QPINCR)) == 0 
+  && parseReply(',', (uint8_t)BG95ESP32PinField::Pin, &pincount)
+  && parseReply(',', (uint8_t)BG95ESP32PinField::Puk, &pukcount) 
+  && waitResponse() == 0) {
+    return {pincount, pukcount};
   }
-  return {-1, -1, -1, -1};
-}
+  return {-1, -1};
+ }
+
+ BG95ESP32PinStatus BG95ESP32::getPinState2() {
+  int8_t pin2count=-1, puk2count=-1;
+
+  sendAT(TO_F(TOKEN_QPINCP2));
+  if (waitResponse(10000L, TO_F(TOKEN_QPINCR)) == 0 
+  && parseReply(',', (uint8_t)BG95ESP32PinField::Pin2, &pin2count)
+  && parseReply(',', (uint8_t)BG95ESP32PinField::Puk2, &puk2count) 
+  && waitResponse() == 0) {
+    return {pin2count, puk2count};
+  }
+  return {-1, -1};
+ }

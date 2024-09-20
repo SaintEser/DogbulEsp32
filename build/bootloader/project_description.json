@@ -19,7 +19,7 @@
     "phy_data_partition": "",
     "monitor_baud" :      "115200",
     "monitor_toolprefix": "riscv32-esp-elf-",
-    "c_compiler":         "C:/Users/Esso/esp/v5.1.4/esp-idf/tools/tools/riscv32-esp-elf/esp-12.2.0_20230208/riscv32-esp-elf/bin/riscv32-esp-elf-gcc.exe",
+    "c_compiler":         "C:/Users/Esso/.espressif/tools/riscv32-esp-elf/esp-12.2.0_20230208/riscv32-esp-elf/bin/riscv32-esp-elf-gcc.exe",
     "config_environment" : {
         "COMPONENT_KCONFIGS" : "C:/Users/Esso/esp/v5.1.4/esp-idf/components/efuse/Kconfig;C:/Users/Esso/esp/v5.1.4/esp-idf/components/esp_common/Kconfig;C:/Users/Esso/esp/v5.1.4/esp-idf/components/esp_hw_support/Kconfig;C:/Users/Esso/esp/v5.1.4/esp-idf/components/esp_system/Kconfig;C:/Users/Esso/esp/v5.1.4/esp-idf/components/freertos/Kconfig;C:/Users/Esso/esp/v5.1.4/esp-idf/components/hal/Kconfig;C:/Users/Esso/esp/v5.1.4/esp-idf/components/log/Kconfig;C:/Users/Esso/esp/v5.1.4/esp-idf/components/newlib/Kconfig;C:/Users/Esso/esp/v5.1.4/esp-idf/components/soc/Kconfig;C:/Users/Esso/esp/v5.1.4/esp-idf/components/spi_flash/Kconfig",
         "COMPONENT_KCONFIGS_PROJBUILD" : "C:/Users/Esso/esp/v5.1.4/esp-idf/components/bootloader/Kconfig.projbuild;C:/Users/Esso/esp/v5.1.4/esp-idf/components/esp_app_format/Kconfig.projbuild;C:/Users/Esso/esp/v5.1.4/esp-idf/components/esp_rom/Kconfig.projbuild;C:/Users/Esso/esp/v5.1.4/esp-idf/components/esptool_py/Kconfig.projbuild;C:/Users/Esso/esp/v5.1.4/esp-idf/components/partition_table/Kconfig.projbuild"
