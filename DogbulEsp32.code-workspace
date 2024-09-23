@@ -12,7 +12,9 @@
 			"istream": "cpp",
 			"ostream": "cpp",
 			"regex": "cpp",
-			"*.inc": "cpp"
+			"*.inc": "cpp",
+			"random": "cpp",
+			"future": "cpp"
 		}
 	}
 }

@@ -2,231 +2,227 @@
 #include <errno.h>
 #define AT_TERMINATOR '\r\n'
 
-bool (*parseMQTTmessage)(uint8_t,String,String);
-void(*tcpOnClose)(uint8_t clientID);
+bool (*parseMQTTmessage)(uint8_t, String, String);
+void (*tcpOnClose)(uint8_t clientID);
 
-void BG95AT::begin(Stream& port)
-{
-	_port = &port;
-	_output.begin(LOG_LEVEL_VERBOSE, this, false);
+void BG95AT::begin(Stream &port) {
+  _port = &port;
+  _output.begin(LOG_LEVEL_VERBOSE, this, false);
 #if _BG95ESP32_DEBUG
-	_debug.begin(LOG_LEVEL_VERBOSE, &Serial, false);
-#endif // _BG95ESP32_DEBUG
+  _debug.begin(LOG_LEVEL_VERBOSE, &Serial, false);
+#endif  // _BG95ESP32_DEBUG
 }
 
 void BG95AT::flushInput() {
-	uint16_t timeout = 0;
-	while(readNext(replyBuffer, BUFFER_SIZE, &timeout));
-	memset(replyBuffer, 0, BUFFER_SIZE);
+  uint16_t timeout = 0;
+  while (readNext(replyBuffer, BUFFER_SIZE, &timeout));
+  memset(replyBuffer, 0, BUFFER_SIZE);
 }
 
-size_t BG95AT::readNext(char * buffer, size_t size, uint16_t * timeout, char stop)
-{
-	size_t i = 0;
-	bool exit = false;
+size_t BG95AT::readNext(char *buffer, size_t size, uint16_t *timeout, char stop) {
+  size_t i = 0;
+  bool exit = false;
 
-	do {
-		while(!exit && i < size - 1 && available()) {
-			char c = read();
-			buffer[i] = c;
-			i++;
+  do {
+    while (!exit && i < size - 1 && available()) {
+      char c = read();
+      buffer[i] = c;
+      i++;
 
-			exit |= stop && c == stop;
-		}
+      exit |= stop && c == stop;
+    }
 
-		if(timeout) {			
-			if(*timeout) {
-				delay(1);
-				(*timeout)--;
-			}
+    if (timeout) {
+      if (*timeout) {
+        delay(1);
+        (*timeout)--;
+      }
 
-			if(!(*timeout)) break;
-		}
-	} while(!exit && i < size - 1);
+      if (!(*timeout)) {
+        break;
+      }
+    }
+  } while (!exit && i < size - 1);
 
-	buffer[i] = '\0';
+  buffer[i] = '\0';
 
-	if(i) {
-		RECEIVEARROW;
-		BG95ESP32_PRINT(buffer);
-	}
+  if (i) {
+    RECEIVEARROW;
+    BG95ESP32_PRINT(buffer);
+  }
 
-	return i > 0 ? i - 1 : i;
+  return i > 0 ? i - 1 : i;
 }
 
-int8_t BG95AT::waitResponse(uint16_t timeout, 
-	ATConstStr s1, 
-	ATConstStr s2,
-	ATConstStr s3,
-	ATConstStr s4)
-{
-	Log.notice(F("waitResponse: Entering function" NL));
-	ATConstStr wantedTokens[4] = { s1, s2, s3, s4 };
-	size_t length;
+int8_t BG95AT::waitResponse(uint16_t timeout, ATConstStr s1, ATConstStr s2, ATConstStr s3, ATConstStr s4) {
+  Log.notice(F("waitResponse: Entering function" NL));
+  ATConstStr wantedTokens[4] = {s1, s2, s3, s4};
+  size_t length;
 
-	do {
-		Log.notice(F("waitResponse: Clearing replyBuffer" NL));
-		memset(replyBuffer, 0, BUFFER_SIZE);
-		Log.notice(F("waitResponse: Reading next line" NL));
-		length = readNext(replyBuffer, BUFFER_SIZE, &timeout, '\n');
+  do {
+    Log.notice(F("waitResponse: Clearing replyBuffer" NL));
+    memset(replyBuffer, 0, BUFFER_SIZE);
+    Log.notice(F("waitResponse: Reading next line" NL));
+    length = readNext(replyBuffer, BUFFER_SIZE, &timeout, '\n');
 
-		if(!length) {
-			Log.notice(F("waitResponse: Read nothing, continuing" NL));
-			continue; 					//read nothing
-		}
-		if(wantedTokens[0] == NULL) {
-			Log.notice(F("waitResponse: Looking for any line with content, returning 0" NL));
-			return 0;	//looking for a line with any content
-		}
+    if (!length) {
+      Log.notice(F("waitResponse: Read nothing, continuing" NL));
+      continue;  //read nothing
+    }
+    if (wantedTokens[0] == NULL) {
+      Log.notice(F("waitResponse: Looking for any line with content, returning 0" NL));
+      return 0;  //looking for a line with any content
+    }
 
-		for(uint8_t i = 0; i < 4; i++) {
-			if(wantedTokens[i]) {
-				Log.notice(F("waitResponse: Checking token %d" NL), i);
-				char *p = strstr_P(replyBuffer, TO_P(wantedTokens[i]));
-				if(replyBuffer == p) {
-					Log.notice(F("waitResponse: Found token %d, returning %d" NL), i, i);
-					return i;				
-				}
-			}
-		}
-	} while(timeout);
+    for (uint8_t i = 0; i < 4; i++) {
+      if (wantedTokens[i]) {
+        Log.notice(F("waitResponse: Checking token %d" NL), i);
+        char *p = strstr_P(replyBuffer, TO_P(wantedTokens[i]));
+        if (replyBuffer == p) {
+          Log.notice(F("waitResponse: Found token %d, returning %d" NL), i, i);
+          return i;
+        }
+      }
+    }
+  } while (timeout);
 
-	Log.notice(F("waitResponse: Timeout reached, returning -1" NL));
-	return -1;
+  Log.notice(F("waitResponse: Timeout reached, returning -1" NL));
+  return -1;
 }
 
-size_t BG95AT::copyCurrentLine(char *dst, size_t dstSize, uint16_t shift)
-{
-	Log.notice(F("copyCurrentLine: Copying current line with shift %d" NL), shift);
-	char *p = dst;
-	char *p1;
+size_t BG95AT::copyCurrentLine(char *dst, size_t dstSize, uint16_t shift) {
+  Log.notice(F("copyCurrentLine: Copying current line with shift %d" NL), shift);
+  char *p = dst;
+  char *p1;
 
-	Log.notice(F("copyCurrentLine: Copying buffer content to destination" NL));
-	p += safeCopy(replyBuffer + shift, p, dstSize); // copy the current buffer content
-	
-	//copy the rest of the line if any
-	if(!strchr(dst, '\n')) {
-		Log.notice(F("copyCurrentLine: No newline found, reading next part of the line" NL));
-		uint16_t timeout = 2000;
-		p += readNext(p, dstSize - (p - dst), &timeout, '\n');
-	}
+  Log.notice(F("copyCurrentLine: Copying buffer content to destination" NL));
+  p += safeCopy(replyBuffer + shift, p, dstSize);  // copy the current buffer content
 
-	// terminating the string no matter what
-	p1 = strchr(dst, '\n');
-	p = p1 ? p1 : p;
-	*p = '\0';
+  //copy the rest of the line if any
+  if (!strchr(dst, '\n')) {
+    Log.notice(F("copyCurrentLine: No newline found, reading next part of the line" NL));
+    uint16_t timeout = 2000;
+    p += readNext(p, dstSize - (p - dst), &timeout, '\n');
+  }
 
-	Log.notice(F("copyCurrentLine: Final copied line: %s" NL), dst);
-	return strlen(dst);
+  // terminating the string no matter what
+  p1 = strchr(dst, '\n');
+  p = p1 ? p1 : p;
+  *p = '\0';
+
+  Log.notice(F("copyCurrentLine: Final copied line: %s" NL), dst);
+  return strlen(dst);
 }
 
-size_t BG95AT::safeCopy(const char *src, char *dst, size_t dstSize)
-{
-	Log.notice(F("safeCopy: Copying from source to destination with size %d" NL), dstSize);
-	size_t len = strlen(src);
-	if (dst != NULL) {
-		size_t maxLen = min(len + 1, dstSize);
-		strlcpy(dst, src, maxLen);
-		Log.notice(F("safeCopy: Copied string: %s" NL), dst);
-	}
+size_t BG95AT::safeCopy(const char *src, char *dst, size_t dstSize) {
+  Log.notice(F("safeCopy: Copying from source to destination with size %d" NL), dstSize);
+  size_t len = strlen(src);
+  if (dst != NULL) {
+    size_t maxLen = min(len + 1, dstSize);
+    strlcpy(dst, src, maxLen);
+    Log.notice(F("safeCopy: Copied string: %s" NL), dst);
+  }
 
-	return len;
+  return len;
 }
 
-char* BG95AT::find(const char* str, char divider, uint8_t index)
-{
-	Log.notice(F("find: Searching for divider '%c' at index %d in string: %s" NL), divider, index, str);
-	char* p = strchr(str, ':');
-	if (p == NULL) {
-		Log.notice(F("find: ':' not found, searching for first character '%c'" NL), str[0]);
-		p = strchr(str, str[0]); // ditching eventual response header
-	}
+char *BG95AT::find(const char *str, char divider, uint8_t index) {
+  Log.notice(F("find: Searching for divider '%c' at index %d in string: %s" NL), divider, index, str);
+  char *p = strchr(str, ':');
+  if (p == NULL) {
+    Log.notice(F("find: ':' not found, searching for first character '%c'" NL), str[0]);
+    p = strchr(str, str[0]);  // ditching eventual response header
+  }
 
-	if (p != NULL) {
-		p++;
-		for (uint8_t i = 0; i < index; i++)
-		{
-			p = strchr(p, divider);
-			if (p == NULL) {
-				Log.notice(F("find: Divider '%c' not found at index %d" NL), divider, i);
-				return NULL;
-			}
-			p++;
-		}
-		Log.notice(F("find: Found divider '%c' at index %d" NL), divider, index);
-	} else {
-		Log.notice(F("find: Initial search character not found" NL));
-	}
+  if (p != NULL) {
+    p++;
+    for (uint8_t i = 0; i < index; i++) {
+      p = strchr(p, divider);
+      if (p == NULL) {
+        Log.notice(F("find: Divider '%c' not found at index %d" NL), divider, i);
+        return NULL;
+      }
+      p++;
+    }
+    Log.notice(F("find: Found divider '%c' at index %d" NL), divider, index);
+  } else {
+    Log.notice(F("find: Initial search character not found" NL));
+  }
 
-	return p;
+  return p;
 }
 
-bool BG95AT::parse(const char* str, char divider, uint8_t index, uint8_t* result)
-{
-	Log.notice("Parsing uint8_t from string: %s" NL, str);
-	uint16_t tmpResult;
-	if (!parse(str, divider, index, &tmpResult)) return false;
+bool BG95AT::parse(const char *str, char divider, uint8_t index, uint8_t *result) {
+  Log.notice("Parsing uint8_t from string: %s" NL, str);
+  uint16_t tmpResult;
+  if (!parse(str, divider, index, &tmpResult)) {
+    return false;
+  }
 
-	*result = (uint8_t)tmpResult;
-	Log.notice("Parsed uint8_t result: %u" NL, *result);
-	return true;
+  *result = (uint8_t)tmpResult;
+  Log.notice("Parsed uint8_t result: %u" NL, *result);
+  return true;
 }
 
-bool BG95AT::parse(const char* str, char divider, uint8_t index, int8_t* result)
-{
-	Log.notice("Parsing int8_t from string: %s" NL, str);
-	int16_t tmpResult;
-	if (!parse(str, divider, index, &tmpResult)) return false;
+bool BG95AT::parse(const char *str, char divider, uint8_t index, int8_t *result) {
+  Log.notice("Parsing int8_t from string: %s" NL, str);
+  int16_t tmpResult;
+  if (!parse(str, divider, index, &tmpResult)) {
+    return false;
+  }
 
-	*result = (int8_t)tmpResult;
-	Log.notice("Parsed int8_t result: %d" NL, *result);
-	return true;
+  *result = (int8_t)tmpResult;
+  Log.notice("Parsed int8_t result: %d" NL, *result);
+  return true;
 }
 
-bool BG95AT::parse(const char* str, char divider, uint8_t index, uint16_t* result)
-{
-	Log.notice("Parsing uint16_t from string: %s" NL, str);
-	char* p = find(str, divider, index);
-	if (p == NULL) return false;
+bool BG95AT::parse(const char *str, char divider, uint8_t index, uint16_t *result) {
+  Log.notice("Parsing uint16_t from string: %s" NL, str);
+  char *p = find(str, divider, index);
+  if (p == NULL) {
+    return false;
+  }
 
-	errno = 0;
-	*result = strtoul(p, NULL, 10);
-	Log.notice("Parsed uint16_t result: %u" NL, *result);
+  errno = 0;
+  *result = strtoul(p, NULL, 10);
+  Log.notice("Parsed uint16_t result: %u" NL, *result);
 
-	return errno == 0;
+  return errno == 0;
 }
 
 #if defined(NEED_SIZE_T_OVERLOADS)
-bool BG95AT::parse(const char* str, char divider, uint8_t index, size_t* result) { 
-	Log.notice("Parsing size_t from string: %s", str);
-	char* p = find(str, divider, index);
-	if (p == NULL) return false;
+bool BG95AT::parse(const char *str, char divider, uint8_t index, size_t *result) {
+  Log.notice("Parsing size_t from string: %s", str);
+  char *p = find(str, divider, index);
+  if (p == NULL) {
+    return false;
+  }
 
-	errno = 0;
-	*result = strtoull(p, NULL, 10);
-	Log.notice("Parsed size_t result: %zu", *result);
-	
-	return errno == 0; 
+  errno = 0;
+  *result = strtoull(p, NULL, 10);
+  Log.notice("Parsed size_t result: %zu", *result);
+
+  return errno == 0;
 }
 #endif
 
-bool BG95AT::parse(const char* str, char divider, uint8_t index, int16_t* result)
-{   
-	Log.notice("Parsing int16_t from string: %s" NL, str);
-	char* p = find(str, divider, index);
-	if (p == NULL) return false;
+bool BG95AT::parse(const char *str, char divider, uint8_t index, int16_t *result) {
+  Log.notice("Parsing int16_t from string: %s" NL, str);
+  char *p = find(str, divider, index);
+  if (p == NULL) {
+    return false;
+  }
 
-	errno = 0;
-	*result = strtol(p, NULL, 10);
-	Log.notice("Parsed int16_t result: %d" NL, *result);
-	
-	return errno == 0;
+  errno = 0;
+  *result = strtol(p, NULL, 10);
+  Log.notice("Parsed int16_t result: %d" NL, *result);
+
+  return errno == 0;
 }
 
-bool BG95AT::parse(const char* str, char divider, uint8_t index, float* result)
-{
+bool BG95AT::parse(const char *str, char divider, uint8_t index, float *result) {
 
-/* 
+  /* 
 //from BG95 library
 
 String BG95AT::get_command(String command, uint32_t timeout){
@@ -1419,13 +1415,34 @@ void BG95AT::process_sms(uint8_t index) {
 	}
 }
  */
-	Log.notice("Parsing float from string: %s", str);
-	char* p = find(str, divider, index);
-	if (p == NULL) return false;
+  Log.notice("Parsing float from string: %s", str);
+  char *p = find(str, divider, index);
+  if (p == NULL) {
+    return false;
+  }
 
-	errno = 0;
-	*result = strtod(p, NULL);
-	Log.notice("Parsed float result: %f", *result);
+  errno = 0;
+  *result = strtod(p, NULL);
+  Log.notice("Parsed float result: %f", *result);
 
-	return errno == 0;
+  return errno == 0;
+}
+
+bool BG95AT::reset() {
+
+  // APN reset
+  op.ready = false;
+
+  for (uint8_t i = 0; i < MAX_CONNECTIONS; i++) {
+    data_pending[i] = false;
+    apn[i].connected = false;
+  }
+  for (uint8_t i = 0; i < MAX_TCP_CONNECTIONS; i++) {
+    tcp[i].connected = false;
+  }
+  for (uint8_t i = 0; i < MAX_MQTT_CONNECTIONS; i++) {
+    mqtt[i].connected = false;
+  }
+
+  return true;
 }

@@ -1,7 +1,7 @@
 {
     "version":            "1.1",
     "project_name":       "DogbulEsp32",
-    "project_version":    "19dc1779-dirty",
+    "project_version":    "d28c7e61-dirty",
     "project_path":       "H:/OneDrive/Documents/esp-idf/Projects/DogbulEsp32",
     "idf_path":           "C:/Users/Esso/esp/v5.1.4/esp-idf",
     "build_dir":          "H:/OneDrive/Documents/esp-idf/Projects/DogbulEsp32/build",
@@ -1180,8 +1180,8 @@
             "managed_reqs": [],
             "managed_priv_reqs": [ "espressif__arduino-esp32", "espressif__led_strip" ],
             "file": "H:/OneDrive/Documents/esp-idf/Projects/DogbulEsp32/build/esp-idf/main/libmain.a",
-            "sources": [ "H:/OneDrive/Documents/esp-idf/Projects/DogbulEsp32/main/main.cpp" ],
-            "include_dirs": []
+            "sources": [ "H:/OneDrive/Documents/esp-idf/Projects/DogbulEsp32/main/main.cpp", "H:/OneDrive/Documents/esp-idf/Projects/DogbulEsp32/main/ledmanage.cpp" ],
+            "include_dirs": [ "." ]
         },
         "mbedtls": {
             "alias": "idf::mbedtls",
@@ -2437,7 +2437,7 @@
             "priv_reqs": [ "espressif__arduino-esp32", "espressif__led_strip" ],
             "managed_reqs": [],
             "managed_priv_reqs": [ "espressif__arduino-esp32", "espressif__led_strip" ],
-            "include_dirs": []
+            "include_dirs": [ "." ]
         },
         "chmorgan__esp-libhelix-mp3": {
             "alias": "idf::chmorgan__esp-libhelix-mp3",

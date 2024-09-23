@@ -1,5 +1,6 @@
 #include "Arduino.h"
-#include "led_strip.h"
+#include "esp_log.h"
+
 #include "BG95ESP32.h"
 
 #include "nvs_flash.h"
@@ -9,6 +10,7 @@
 #include "esp_gap_ble_api.h"
 #include "esp_gatt_common_api.h"
 
+#include "ledmanage.h"
 #define DELAY(ms) vTaskDelay(pdMS_TO_TICKS(ms))
 #define DELAY_1S DELAY(1000)
 #define DEVICE_NAME "ESP32_C3_BLE" // Defines the Bluetooth device name broadcasted to clients
@@ -19,7 +21,7 @@
 #define PIN_DTR 3
 #define PWR_PIN 2
 #define SIM_RST 6
-#define LED_PIN 8
+
 #define SerialMon Serial
 #define SerialAT SIM_SERIAL_TYPE
 #define BUFFER_SIZE 256
@@ -33,24 +35,20 @@
 #define STRLCPY_P(s1, s2, size) strlcpy_P(s1, s2, size)
 
 // Attribute state (initial value for characteristics)
-//static uint8_t char_value[] = {0x00};
-
-static const char *LED = "LedStrip";
-static uint8_t s_led_state = 0;
+// static uint8_t char_value[] = {0x00};
 
 HardwareSerial SerialAT(1);
 
 BG95ESP32 bg95 = BG95ESP32(SIM_RST, PWR_PIN);
 
-void PowerToggle();
-// bool PowerCheck();
-static void blink_led(void);
-static void configure_led(void);
-static led_strip_handle_t led_strip;
-
 typedef __FlashStringHelper *__StrPtr;
 
 char buffer[BUFFER_SIZE];
+
+uint8_t red = 0;
+uint8_t green = 0;
+uint8_t blue = 16;
+bool s_led_state = 0;
 
 // the setup function runs once when you press reset or power the board
 void setup()
@@ -74,12 +72,14 @@ void setup()
 
 void loop()
 {
-  blink_led();
-  s_led_state = 0;
-  //s_led_state = !s_led_state;
-  //DELAY_1S;
-  bg95.getSimState(buffer,BUFFER_SIZE);
-  Log.notice(S_F("Response: %s " NL),buffer);
+  blink_led(1, 0, 0, 0);
+  // s_led_state = 1;
+  //  s_led_state = !s_led_state;
+  //  DELAY_1S;
+  bg95.getSimState(buffer, BUFFER_SIZE);
+  check_sim(buffer, BUFFER_SIZE);
+
+  Log.notice(S_F("Response: %s " NL), buffer);
   // BG95ESP32PinStatus pinState1 = bg95.getPinState1();
   // Log.notice(S_F("Pin Count: %d"  NL), pinState1.pin);
   // Log.notice(S_F("Puk Count: %d"  NL), pinState1.puk);
@@ -91,43 +91,4 @@ void loop()
   // delay(1000);
   // bg95.sendCommand("+C",buffer,BUFFER_SIZE);
   // Log.notice(S_F("Response: \"%s\" " CR),buffer);
-}
-
-static void blink_led(void)
-{
-
-  if (s_led_state) /* If the addressable LED is enabled */
-  {
-    led_strip_set_pixel(led_strip, 0, 0, 0, 16); /* Set the LED pixel using RGB from 0 (0%) to 255 (100%) for each color */
-    led_strip_refresh(led_strip);                /* Refresh the strip to send data */
-    ESP_LOGI(LED, "LED ON!");
-  }
-  else
-  {
-    led_strip_clear(led_strip); /* Set all LED off to clear all pixels */
-    ESP_LOGI(LED, "LED OFF!");
-  }
-}
-
-static void configure_led(void)
-{
-  ESP_LOGI(LED, "Example configured to blink addressable LED!");
-
-  led_strip_config_t strip_config = {
-      /* LED strip initialization with the GPIO and pixels number*/
-      .strip_gpio_num = LED_PIN,
-      .max_leds = 1, // at least one LED on board
-      .led_pixel_format = LED_PIXEL_FORMAT_GRB,
-      .led_model = LED_MODEL_WS2812,
-
-  .flags = 0, // Initialize flags to 0
-};
-  led_strip_rmt_config_t rmt_config = {
-      .clk_src = RMT_CLK_SRC_DEFAULT,
-      .resolution_hz = 10 * 1000 * 1000, // 10MHz
-      .mem_block_symbols = 0,
-      .flags = 0, // Use DMA to transmit data
-  };
-  ESP_ERROR_CHECK(led_strip_new_rmt_device(&strip_config, &rmt_config, &led_strip));
-  led_strip_clear(led_strip); /* Set all LED off to clear all pixels */
 }
