@@ -31,26 +31,22 @@ void BG95ESP32::powertoggle() {
 
 bool BG95ESP32::powerOnOff(bool power) {
   if (_pwrKeyPin == BG95ESP32_UNAVAILABLE_PIN) {
+    ESP_LOGE("BG95", "Power key pin is unavailable");
     return false;  //Corrected the logic error
   }
 
   bool currentlyPowered = powered();
   if (currentlyPowered == power) {
+    ESP_LOGI("BG95", "powerOnOff: %d", power);
     return true;
   }
-
-  BG95ESP32_PRINT_P("powerOnOff: %t", power);
   powertoggle();
-
-  //uint16_t timeout = 5000;
   do {
-    BG95ESP32_PRINT_P("powerOnOff: %t", power);
+    ESP_LOGI("BG95", "Trying to turn IoT Module On");
+    ESP_LOGI("BG95", "powerOnOff: %d", power);
     powertoggle();
-    //delay(500);
-    //timeout -= 150;
     currentlyPowered = powered();
   } while (currentlyPowered != power);  //&& timeout > 0
-
   return currentlyPowered == power;
 }
 

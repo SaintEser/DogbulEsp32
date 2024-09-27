@@ -55,6 +55,8 @@ private:
   bool setBearerSetting(ATConstStr parameter, const char *value);
 
 public:
+  bool initSimDetection(bool enable, bool pinbehave);
+
   bool parseReplyPin(const char *responseBuffer, int &pinCount, int &pukCount, int &pin2Count, int &puk2Count);
 
   int readResponse(char *buffer, size_t bufferSize);
@@ -120,7 +122,9 @@ public:
   /**
 	 * Get a string indicating the current sim state.
 	 */
-  size_t getSimState(char *state, size_t stateSize);
+  uint8_t getSimState();
+
+  bool check_sim(uint8_t buffer);
 
   /**
 	 * Get the device IMEI number.

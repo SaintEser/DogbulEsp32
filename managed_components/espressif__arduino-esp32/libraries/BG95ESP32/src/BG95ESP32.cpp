@@ -25,15 +25,14 @@ BG95ESP32::~BG95ESP32() {}
 //#pragma region Public functions
 
 void BG95ESP32::init() {
+  ESP_LOGI("BG95", "Init...");
   powerOnOff(1);
-  // BG95ESP32_PRINT_SIMPLE_P("Init...");
-  // //setEcho(BG95ESP32Echo::On);
-  // //reset();
-  // waitForReady();
-  // delay(1500);
+  //setEcho(BG95ESP32Echo::On);
+  //reset();
+  //delay(1500);
   setEcho(BG95ESP32Echo::Off);
+  initSimDetection(true, false);  //only after if sim is detected
 }
-
 /* void BG95ESP32::reset() {
   digitalWrite(_resetPin, HIGH);
   delay(10);
